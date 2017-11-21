@@ -1,5 +1,18 @@
 <?php
+/* * * * * *
+* Страница для прохождения теста.
+* Функции:
+* - build_test - выводит тест в виде HTML
+* - check_answers - проверяет правильность ответов
+* - create_diploma - создает картинку с результатами тест
+* - check_test - проверяет наличие файла с тестом
+* * * * * */
+require_once('Redirect.php');
 session_start();
+if (!isset($_SESSION['root'])){
+  redirect('index.php');
+}
+
 // Проверяем переданное название теста
 function check_test()
 {

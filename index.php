@@ -1,7 +1,13 @@
 <?php
+/* * * * * *
+* Стартовая страница.
+* Проводит авторизацию пользователей и гостей.
+* Функция
+* - check_fields - проверяет корректность заполнения полей и выдает уровни доступа
+* * * * * */
 require_once('login.php');
 if(isset($_POST['username'])){
-  CheckFields($_POST['username'], $_POST['password']);
+  check_fields($_POST['username'], $_POST['password']);
 }
 ?>
 

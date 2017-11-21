@@ -1,7 +1,14 @@
 <?php
+/* * * * * *
+* Функции для обработки теста.
+* Получает имя из данных сессии.
+* Функции:
+* - build_test - выводит тест в виде HTML
+* - check_answers - проверяет правильность ответов
+* - create_diploma - создает картинку с результатами теста
+* * * * * */
 function build_test($path)
 {
-    //если все условия соблюдены - обрабатываем файл с тестом
     $json = file_get_contents($path);
     $json = json_decode($json, true);
     $count_questions = count($json);

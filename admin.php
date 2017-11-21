@@ -1,29 +1,37 @@
 <?php
+/* * * * * *
+* Страница admin.
+* Позволяет авторизированным пользователям загрузить новый тест.
+* Доступ для гостей закрыт.
+* * * * * */
 session_start();
 if ($_SESSION['root'] != '1'){
-  header($_SERVER['SERVER_PROTOCOL'].'403 Forbidden');
+  header($_SERVER['SERVER_PROTOCOL'].' 403 Forbidden');
   echo"<H1>403 Forbidden</H1>";
   exit();
 }
-require_once('Redirect.php');
-// Обрабатываем загруженный файл
-if(isset($_FILES['userfile'])){
-  $file = $_FILES['userfile'];
-  $path = $file['name'];
-  // Если файл JSON, то сохраняем его в папку с тестами
-  if(pathinfo($file['name'])['extension'] === 'json'){
-    if (move_uploaded_file($file['tmp_name'], "Tests/".$path))
-    {
-      // После успешной загрузки файла перенаправляем на список тестов
-      redirect('Location: list.php');
+else{
+  require_once('Redirect.php');
+  // Обрабатываем загруженный файл
+  if(isset($_FILES['userfile'])){
+    $file = $_FILES['userfile'];
+    $path = $file['name'];
+    // Если файл JSON, то сохраняем его в папку с тестами
+    if(pathinfo($file['name'])['extension'] === 'json'){
+      if (move_uploaded_file($file['tmp_name'], "Tests/".$path))
+      {
+        file_put_contents('log.txt', $_SESSION['username']." добавил $file", FILE_APPEND);
+        // После успешной загрузки файла перенаправляем на список тестов
+        redirect('list.php');
+      }
+      else {
+        echo "Произошла ошибка при загрузке файла";
+      }
     }
+    // иначе выдаем сообщение об ошибке
     else {
-      echo "Произошла ошибка при загрузке файла";
+      echo "Загружен неверный файл";
     }
-  }
-  // иначе выдаем сообщение об ошибке
-  else {
-    echo "Загружен неверный файл";
   }
 }
 ?>

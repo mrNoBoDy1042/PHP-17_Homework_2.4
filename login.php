@@ -1,4 +1,13 @@
 <?php
+/* * * * * *
+* Скрипт для авторизации пользователя.
+* Функции:
+* - login - проверяет совпадение логина и пароля с данными
+*           уже зарегистрированных пользователей
+* - check_post - проверяет метод передачи данных на сервер
+* - check_fields - проверяет правильность заполнения полей
+* - give_access - присваиваивает пользователю уровень доступа
+* * * * * */
 session_start();
 require_once('Redirect.php');
 function login($username, $userpassword)
@@ -9,41 +18,42 @@ function login($username, $userpassword)
     if($username === $login && $userpassword === $pass){
       return true;
     }
+    elseif ($username === $login && empty($userpassword)) {
+      echo "<script>alert('Такой пользователь уже существует')</script>";
+      return $username;
+    }
+    elseif ($username === $login && $userpassword !== $pass) {
+      echo "<script>alert('Неверный пароль')</script>";
+    }
   }
   return false;
 }
 
-function CheckPost()
+function check_post()
 {
   return $_SERVER['REQUEST_METHOD'] == "POST";
 }
 
-function CheckFields($username,$userpass)
+function check_fields($username,$userpass)
 {
-  if (CheckPost()){
-    if (!empty($userpass)){
-      if (login($username,$userpass)){
-        GiveAccess($username, '1');
-      }
-      else{
-        echo "<script>alert('Неверный логин и пароль')</script>";
-      }
+  if (check_post()){
+    $result = login($username,$userpass);
+    if (empty($username)) {
+      echo "<script>alert('Необходимо ввсти имя')</script>";
     }
-    else{
-      if(!empty($username)){
-        GiveAccess($username, '0');
-      }
-      else{
-        echo "<script>alert('Необходимо заполнить поле имя')</script>";
-      }
+    elseif ($result === true){
+      give_access($username, '1');
+    }
+    elseif (!empty($username) && empty($userpass) && $result !== $username){
+      give_access($username, '0');
     }
   }
 }
 
-function GiveAccess($username, $status)
+function give_access($username, $status)
 {
   $_SESSION['root'] = $status;
   $_SESSION['username'] = $username;
-  redirect("Location: list.php");
+  redirect("list.php");
 }
 ?>
