@@ -34,8 +34,8 @@ function check_test()
   // Возвращаем путь к тесту
   return $path;
 }
-
-$path_to_test = check_test();
 require_once('funcs_for_test.php');
+send_diploma();
+$path_to_test = check_test();
 list($name, $points) = build_test($path_to_test);
-create_diploma($name, $points);
+create_diploma($name, $points, $_GET['t']);
